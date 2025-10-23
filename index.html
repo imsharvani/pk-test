@@ -24,14 +24,31 @@ nav a:hover{color:#00bfff}
 .call-btn{display:none;background:#00bfff;color:#fff;padding:10px 20px;border-radius:30px;font-weight:600;box-shadow:0 4px 10px rgba(0,0,0,.3);transition:.3s;white-space:nowrap}
 .call-btn:hover{background:#0095ff;transform:translateY(-2px)}
 
-/* HERO */
-.hero{background:linear-gradient(rgba(0,0,70,.6),rgba(0,0,0,.7)),url('https://images.unsplash.com/photo-1581091012184-5c8d9d0b9b44?auto=format&fit=crop&w=1600&q=80')center/cover no-repeat;height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#fff;padding:0 20px;margin-top:65px}
-.hero h2{font-size:2rem;font-weight:700;margin-bottom:15px;text-shadow:0 2px 6px rgba(0,0,0,.6)}
-.hero p{max-width:640px;font-size:1rem;line-height:1.6;margin-bottom:25px}
+/* HERO SLIDER */
+.hero-slider{position:relative;margin-top:65px;height:70vh;overflow:hidden}
+.slide{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  background-size:cover;background-position:center;
+  opacity:0;transition:opacity 1.5s ease-in-out;
+}
+.slide.active{opacity:1;z-index:2}
+.slide::after{
+  content:"";
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,25,80,0.55);
+}
+.hero-content{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:3;text-align:center;color:#fff;
+  background:rgba(255,255,255,0.1);backdrop-filter:blur(4px);
+  padding:30px 25px;border-radius:12px;max-width:650px;box-shadow:0 5px 20px rgba(0,0,0,0.4)
+}
+.hero-content h2{font-size:2rem;font-weight:700;margin-bottom:15px;text-shadow:0 2px 6px rgba(0,0,0,.6)}
+.hero-content p{font-size:1rem;line-height:1.6;margin-bottom:25px}
 .cta-btn{background:#00bfff;padding:12px 28px;border-radius:40px;color:#fff;font-weight:700;font-size:1rem;box-shadow:0 5px 15px rgba(0,0,0,.3);transition:.3s}
 .cta-btn:hover{background:#0088ff;transform:scale(1.05)}
 
-/* SECTIONS */
+/* SECTION LAYOUTS */
 section{max-width:1200px;margin:80px auto;padding:0 20px}
 .section-title{text-align:center;font-size:1.9rem;color:#00245a;font-weight:700;margin-bottom:40px;position:relative}
 .section-title::after{content:"";display:block;width:70px;height:4px;background:#00bfff;margin:10px auto;border-radius:2px}
@@ -69,9 +86,9 @@ footer a:hover{text-decoration:underline}
 @media(max-width:768px){
   header{flex-direction:column;text-align:center;padding:10px}
   header h1{margin-bottom:8px;font-size:1.3rem}
-  .hero{height:55vh;padding-top:20px}
-  .hero h2{font-size:1.6rem}
-  .hero p{font-size:.95rem}
+  .hero-content{width:90%;padding:20px}
+  .hero-content h2{font-size:1.5rem}
+  .hero-content p{font-size:.95rem}
   .service-card{width:100%;max-width:330px}
   .trust span{display:block;margin:6px 0}
 }
@@ -79,6 +96,7 @@ footer a:hover{text-decoration:underline}
 
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
+  // Show call buttons only in USA
   fetch('https://ipapi.co/json/')
   .then(r=>r.json())
   .then(data=>{
@@ -87,8 +105,16 @@ document.addEventListener('DOMContentLoaded',()=>{
     } else {
       document.querySelectorAll('.usa-only').forEach(el=>el.style.display='none');
     }
-  })
-  .catch(()=>console.warn('Geo lookup failed'));
+  });
+
+  // Hero slider functionality
+  let slides=document.querySelectorAll('.slide');
+  let index=0;
+  setInterval(()=>{
+    slides[index].classList.remove('active');
+    index=(index+1)%slides.length;
+    slides[index].classList.add('active');
+  },5000);
 });
 </script>
 </head>
@@ -105,73 +131,54 @@ document.addEventListener('DOMContentLoaded',()=>{
   <a href="tel:+18669690661" class="call-btn usa-only">📞 Call Now: 1 (866) 969-0661</a>
 </header>
 
-<section class="hero">
-  <h2>Nationwide Plumbing You Can Rely On</h2>
-  <p>Top Plumber Service provides expert plumbing repairs, installations, and maintenance across all 50 U.S. states. Our licensed pros are ready 24/7 for any emergency.</p>
-  <a href="#services" class="cta-btn">Explore Services</a>
+<!-- HERO SLIDER -->
+<section class="hero-slider">
+  <div class="slide active" style="background-image:url('https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=1600&q=80');"></div>
+  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1603791452906-e3ab29b91a4c?auto=format&fit=crop&w=1600&q=80');"></div>
+  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1581091870622-77d9a96e5a7c?auto=format&fit=crop&w=1600&q=80');"></div>
+
+  <div class="hero-content">
+    <h2>Nationwide Plumbing You Can Trust</h2>
+    <p>From drain cleaning and leak detection to full system installations — Top Plumber Service is your 24/7 nationwide plumbing partner.</p>
+    <a href="#services" class="cta-btn">View Our Services</a>
+  </div>
 </section>
 
+<!-- SERVICES SECTION -->
 <section id="services">
   <h2 class="section-title">Comprehensive Plumbing Services</h2>
   <div class="services">
-
     <div class="service-card">
       <img src="https://img.icons8.com/color/96/water.png" alt="Emergency Plumbing">
       <h3>Emergency Plumbing</h3>
       <p>24/7 response for urgent leaks, floods, and pipe bursts — anywhere in the USA.</p>
     </div>
-
     <div class="service-card">
       <img src="https://img.icons8.com/color/96/toilet-bowl.png" alt="Drain Cleaning">
       <h3>Drain Cleaning</h3>
       <p>Professional unclogging, hydro jetting, and full drain system maintenance.</p>
     </div>
-
     <div class="service-card">
       <img src="https://img.icons8.com/color/96/water-heater.png" alt="Water Heater Services">
       <h3>Water Heater Services</h3>
       <p>Repair, install, and maintain tank or tankless water heaters for homes and businesses.</p>
     </div>
-
     <div class="service-card">
       <img src="https://img.icons8.com/color/96/plumber.png" alt="Leak Detection">
       <h3>Leak Detection</h3>
-      <p>Advanced diagnostics to pinpoint hidden leaks and prevent structural water damage.</p>
+      <p>Advanced diagnostics to pinpoint hidden leaks and prevent water damage.</p>
     </div>
-
     <div class="service-card">
-      <img src="https://img.icons8.com/color/96/plumbing.png" alt="Pipe Repair & Replacement">
+      <img src="https://img.icons8.com/color/96/plumbing.png" alt="Pipe Repair">
       <h3>Pipe Repair & Replacement</h3>
       <p>Durable pipe repair and repiping using high-quality copper, PEX, or PVC materials.</p>
     </div>
-
-    <div class="service-card">
-      <img src="https://img.icons8.com/color/96/building.png" alt="Commercial Plumbing">
-      <h3>Commercial Plumbing</h3>
-      <p>Reliable plumbing service for offices, restaurants, retail centers, and warehouses.</p>
-    </div>
-
-    <!-- Fixed icons below -->
     <div class="service-card">
       <img src="https://cdn-icons-png.flaticon.com/512/3132/3132693.png" alt="Bathroom Remodeling">
       <h3>Bathroom Remodeling</h3>
       <p>Upgrade your bathroom with modern plumbing fixtures and water-efficient designs.</p>
     </div>
-
-    <div class="service-card">
-      <img src="https://cdn-icons-png.flaticon.com/512/616/616556.png" alt="Outdoor Plumbing">
-      <h3>Outdoor Plumbing</h3>
-      <p>Installation and repair of garden hoses, outdoor faucets, and irrigation systems.</p>
-    </div>
-
-    <div class="service-card">
-      <img src="https://cdn-icons-png.flaticon.com/512/4618/4618074.png" alt="Water Line Installation">
-      <h3>Water Line Installation</h3>
-      <p>Full installation and replacement of main water lines with minimal disruption.</p>
-    </div>
-
   </div>
-
   <div class="trust">
     <p><span>✔ Licensed</span><span>✔ Insured</span><span>✔ Certified Experts</span><span>✔ 24/7 Nationwide Coverage</span></p>
   </div>
@@ -180,8 +187,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 <section id="about" class="about">
   <h2 class="section-title">About Top Plumber Service</h2>
   <p><strong>Top Plumber Service</strong> is built on a promise of reliable, affordable, and high-quality plumbing across America. We’ve united certified technicians in every state to deliver consistent service with integrity.</p>
-  <p>Whether it’s a small leak or a major commercial project, our goal is to fix issues the right way — on time and on budget. We pride ourselves on clear communication, transparent pricing, and long-lasting workmanship.</p>
-  <p>With modern tools, safety-first practices, and 24-hour availability, we make sure your plumbing problems never become emergencies again.</p>
+  <p>Our licensed plumbers handle everything from emergency fixes to large installations with professionalism and speed. We pride ourselves on clear communication, transparent pricing, and lasting workmanship.</p>
 </section>
 
 <section id="reviews" class="testimonials">
